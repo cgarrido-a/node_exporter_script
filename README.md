@@ -15,11 +15,11 @@ curl -sSL https://raw.githubusercontent.com/cgarrido-a/node_exporter_script/main
 Accede al servidor donde corre Prometheus y ejecuta:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/cgarrido-a/node_exporter_script/main/add_prometheus_target.sh | bash -s -- <IP_DEL_NUEVO_SERVER>
+curl -sSL https://raw.githubusercontent.com/cgarrido-a/node_exporter_script/main/add_prometheus_target.sh | bash -s -- <IP> <SERVER_NAME> <ENVIRONMENT>
 ```
 
 Ejemplo:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/cgarrido-a/node_exporter_script/main/add_prometheus_target.sh | bash -s -- 65.21.100.10
+curl -sSL https://raw.githubusercontent.com/cgarrido-a/node_exporter_script/main/add_prometheus_target.sh | bash -s -- 65.21.100.10 Empieza-1 production
 ```

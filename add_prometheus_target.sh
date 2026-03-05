@@ -2,8 +2,8 @@
 # =============================================================================
 # add_prometheus_target.sh
 # Ejecutar directamente en el server de Prometheus
-# Uso: bash add_prometheus_target.sh <IP_DEL_NUEVO_SERVER>
-# Ejemplo: bash add_prometheus_target.sh 65.21.100.10
+# Uso: bash add_prometheus_target.sh <IP> <SERVER_NAME> <ENVIRONMENT>
+# Ejemplo: bash add_prometheus_target.sh 65.21.100.10 Empieza-1 production
 # =============================================================================
 set -euo pipefail
 
@@ -13,26 +13,37 @@ GREEN='\033[0;32m'
 RED='\033[0;31m'
 NC='\033[0m'
 
-# --- Validar que se pasó una IP ---
-if [[ -z "${1:-}" ]]; then
-  echo -e "${RED}ERROR: Debes pasar la IP del nuevo server${NC}"
-  echo "Uso: bash add_prometheus_target.sh <IP>"
+# --- Validar parámetros ---
+if [[ -z "${1:-}" || -z "${2:-}" || -z "${3:-}" ]]; then
+  echo -e "${RED}ERROR: Faltan parámetros${NC}"
+  echo "Uso: bash add_prometheus_target.sh <IP> <SERVER_NAME> <ENVIRONMENT>"
+  echo "Ejemplo: bash add_prometheus_target.sh 65.21.100.10 Empieza-1 production"
   exit 1
 fi
 
-NEW_TARGET="${1}:9100"
+IP="$1"
+SERVER_NAME="$2"
+ENVIRONMENT="$3"
+NEW_TARGET="${IP}:9100"
 
 # --- Verificar si el target ya existe ---
-if grep -q "$NEW_TARGET" "$PROMETHEUS_YML"; then
+if sudo grep -q "$NEW_TARGET" "$PROMETHEUS_YML"; then
   echo "El target $NEW_TARGET ya existe en prometheus.yml"
   exit 0
 fi
 
-# --- Agregar el nuevo target ---
+# --- Agregar el nuevo target bajo job_name: 'servidor-app' ---
 echo "==> Agregando $NEW_TARGET..."
+
+BLOCK="      - targets: ['${NEW_TARGET}']\n        labels:\n          server_name: '${SERVER_NAME}'\n          environment: '${ENVIRONMENT}'"
+
 TMP_FILE=$(mktemp)
 sudo cp "$PROMETHEUS_YML" "$TMP_FILE"
-sed "/targets:/a\\          - '$NEW_TARGET'" "$TMP_FILE" | sudo tee "$PROMETHEUS_YML" > /dev/null
+sudo sed -i "/job_name: 'servidor-app'/,/job_name:/ {
+  /static_configs:/a\\
+${BLOCK}
+}" "$TMP_FILE"
+sudo cp "$TMP_FILE" "$PROMETHEUS_YML"
 rm -f "$TMP_FILE"
 
 # --- Reiniciar Prometheus ---
