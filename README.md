@@ -23,3 +23,13 @@ Ejemplo:
 ```bash
 curl -sSL https://raw.githubusercontent.com/cgarrido-a/node_exporter_script/main/add_prometheus_target.sh | bash -s -- 65.21.100.10 Empieza-1 production
 ```
+
+## 3. Actualizar la IP de un target existente
+
+Accede al servidor donde corre Prometheus y ejecuta:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/cgarrido-a/node_exporter_script/main/update_prometheus_target.sh | bash
+```
+
+El script mostrará los targets disponibles para seleccionar cuál actualizar.
