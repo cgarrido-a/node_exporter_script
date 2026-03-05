@@ -30,7 +30,7 @@ fi
 
 # --- Agregar el nuevo target ---
 echo "==> Agregando $NEW_TARGET..."
-sed -i "/targets:/a\\          - '$NEW_TARGET'" "$PROMETHEUS_YML"
+sudo sed -i "/targets:/a\\          - '$NEW_TARGET'" "$PROMETHEUS_YML"
 
 # --- Reiniciar Prometheus ---
 sudo systemctl restart prometheus
