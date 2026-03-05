@@ -7,5 +7,5 @@ Script que instala y configura [Node Exporter](https://github.com/prometheus/nod
 Accede al servidor que deseas monitorear y ejecuta:
 
 ```bash
-curl -sSL https://gitlab.com/tu-usuario/infra-scripts/-/raw/main/install_node_exporter.sh | bash
+curl -sSL https://raw.githubusercontent.com/cgarrido-a/node_exporter_script/main/script | bash
 ```
